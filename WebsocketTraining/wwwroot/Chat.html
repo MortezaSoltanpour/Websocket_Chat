@@ -1,0 +1,63 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Chat </title>
+</head>
+<body>
+    <input type="text" id="txtMessage" placeholder="Put your message here" />
+    <button id="btnSend">Send message</button>
+
+    <ul id="messages">
+    </ul>
+
+
+    <script>
+        var uri = "ws://localhost:10808/ws";
+        function connect() {
+            socket = new WebSocket(uri);
+
+            socket.onopen = function (e) {
+                console.log("Connection established");
+            }
+
+            socket.onclose = function (e) {
+                console.log("Connection closed");
+            }
+
+
+            socket.onmessage = function (e) {
+                appendItem(list, e.data);
+                console.log(e.data);
+            }
+        }
+
+        connect();
+
+        var list = document.getElementById("messages");
+        var button = document.getElementById("btnSend");
+
+        button.addEventListener("click", function () {
+
+            var message = document.getElementById("txtMessage").value;
+
+            console.log("message : " + message);
+            sendmessage(message);
+
+        });
+
+
+        function sendmessage(element) {
+            console.log("sending message --------------");
+            socket.send(element);
+        }
+
+        function appendItem(list, message) {
+            var item = document.createElement("li");
+            item.appendChild(document.createTextNode(message));
+            list.appendChild(item);
+        }
+
+    </script>
+</body>
+</html>
